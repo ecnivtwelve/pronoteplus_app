@@ -1,0 +1,321 @@
+<!--______                      _             -->
+<!--| ___ \                    | |        _   -->
+<!--| |_/ / __ ___  _ __   ___ | |_ ___ _| |_ -->
+<!--|  __/ '__/ _ \| '_ \ / _ \| __/ _ \_   _|-->
+<!--| |  | | | (_) | | | | (_) | ||  __/ |_|  -->
+<!--\_|  |_|  \___/|_| |_|\___/ \__\___|      -->
+<!-- Page HTML statique -->
+<!-- Pronote+ version 2 -->
+<!-- Fait par Vince Linise (sous Aihvah Interactve) -->
+<!-- API : https://www.npmjs.com/package/@dorian-eydoux/pronote-api -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Pronote+</title>
+        <meta name="description" content="Consultez vos mauvaises notes avec style sur Pronote+ !">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">  
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> 
+        <meta name="apple-mobile-web-app-title" content="Pronote+"> 
+        <meta name="msapplication-TileImage" content="https://vincelinise.me/pronoteplus/apple-touch-icon.png">  
+
+        <script src="https://unpkg.com/lucide@latest"></script>
+
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+        <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+        <link rel="stylesheet" href="css/colors.css">
+        <link rel="stylesheet" href="css/app.css">
+    </head>
+    <body>
+        <div id="intro">
+            <div id="backstabber"></div>
+            <img src="img/logo.png">
+        </div>
+        
+        <ion-tabs>
+            <!-- Connexion a Pronote -->
+            <ion-modal id="LoginScreen" is-open="false" class="fullModal">
+                <ion-header translucent><!---->
+                    <ion-toolbar>
+                        <ion-title>Connexion à EduConnect</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen>
+                    <div class="fakeWeb ui_login">
+                        <h1>Connexion aux services EduConnect</h1>
+                        <p>Connectez vous à votre compte <a href="https://educonnect.education.gouv.fr/">ÉduConnect</a> pour accéder à Pronote+</p>
+                        <br/>
+                        <input id="login_username" placeholder="Identifiant"></input><br/>
+                        <input id="login_password" type="password" placeholder="Mot de passe"></input><br/>
+
+                        <select id="login_cas" placeholder="Choisir un ENT" value="toutatice">
+                            <option value="toutatice">Toutatice</option>
+                            <option value="monbureaunumerique-educonnect">Mon Bureau Numérique</option>
+                            <option value="parisclassenumerique">Paris Classe Numerique</option>
+                            <option value="moncollege-essonne">Mon collège Essonne</option>
+                            <option value="iledefrance">Île de France</option>
+                            <option value="portail-famille">Portail Famille</option>
+                            <option value="somme">Somme</option>
+                            <option value="seine-et-marne">Seine-et-Marne</option>
+                            <option value="lyceeconnecte">Lycee Connecte</option>
+                            <option value="laclasse">La Classe</option>
+                            <option value="hdf">Hauts-de-France</option>
+                            <option value="haute-garonne">Haute-Garonne</option>
+                            <option value="agora06">Agora 06</option>
+                            <option value="ac-clermont">Académie de Clermont-Ferrand</option>
+                            <option value="none">Aucun ENT</option>
+                        </select><br>
+
+                        <select placeholder="Choisir un ENT" id="login_url" value="https://0350053t.pronote.toutatice.fr/pronote/">
+                            <option value="https://0350053t.pronote.toutatice.fr/pronote/">Lycée Bertrand d'Argentré (Vitré)</option>
+                            <option value="https://0352009u.pronote.toutatice.fr/pronote/">Lycée Victor-et-Hélène-Basch (Rennes)</option>
+                            <option value="https://0352304p.pronote.toutatice.fr/pronote/">Lycée Sévigné (Cesson-Sévigné)</option>
+                            <option value="https://0352448w.pronote.toutatice.fr/pronote/">Collège P.O.Malherbe (Chateaubourg)</option>
+                            <option value="https://0351053e.pronote.toutatice.fr/pronote/">Collège Jean-Monnet (Janzé)</option>
+                            <option value="https://3500002a.index-education.net/pronote/">Lycée Lyautey (Casablanca)</option>
+                            <option value="https://0922615t.index-education.net/pronote/">Lycée Lucie Aubrac (Courbevoie)</option>
+                            <option value="https://0572022n.index-education.net/pronote/">Lycée Polyvalent Félix Mayer (Creutzwald)</option>
+                            <option value="https://0350709f.pronote.toutatice.fr/pronote/">Lycée La Champagne (Vitré)</option>
+                            <option value="other">Autre</option>
+                        </select><br>
+
+                        <p id="fakeWebWrong">Identifiant ou mot de passe incorrect.</p>
+                        <button id="loginBtn" onclick="pronote.process.login()">Se connecter</button>
+
+                        <small>Votre mot de passe sera envoyé aux serveurs d'EduConnect sans passer par Pronote+. Si vous voulez en savoir plus ou que vous vous inquiétez pour vos données, lisez les <a href="https://pronote.plus/terms.pdf">Termes, conditions & mentions légales</a>.</small>
+                    </div>
+                </ion-content>
+            </ion-modal>
+
+            <!-- Demande d'installation -->
+            <ion-modal id="AskPWA" is-open="false" class="fullModal">
+                <div class="NoData">
+                    <img src="./img/pwa.svg">
+                    <p>Merci d'ajouter l'app à votre écran d'accueil !</p>
+                    <small>Pour cela, ouvrez cette page dans Safari ou Chrome, puis appuyez sur partage/menu et ensuite "Sur l'écran d'accueil".</small>
+                </div>
+            </ion-modal>
+
+            <!-- quoi2neuf -->
+            <ion-modal id="qoa2neuf" is-open="false" class="fullModal">
+                <ion-header translucent><!---->
+                    <ion-toolbar>
+                        <ion-title>Quoi de neuf ?</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content class="quoi2neuf">
+                    <ion-slides>
+                        <ion-slide>
+                          <div class="slide">
+                            <img src="img/slide-1.png" />
+                            <h2>Bienvenue dans le tout nouveau Pronote+ !</h2>
+                            <p>
+                              Rapide, efficace, et <b>totalement repensé</b>, Pronote+ v2.0 saura combler les erreurs des précédentes versions !
+                            </p>
+                            <br>
+                            <small>Swipez vers la gauche pour continuer.</small>
+                          </div>
+                        </ion-slide>
+              
+                        <ion-slide>
+                            <div class="slide">
+                          <img src="img/slide-2.png" />
+                          <h2>Toute belle, toute nouvelle interface</h2>
+                          <p>
+                            <b>L'interface de Pronote+ </b> n'a rien à voir à celle de Pronote classque. Moderne, simple, rapide, Pronote+ sera bien plus agréable à utiliser que l'application officielle.
+                          </p>
+                        </div>
+                        </ion-slide>
+              
+                        <ion-slide>
+                            <div class="slide">
+                          <img src="img/slide-3.png" />
+                          <h2>Plus rapide, beaucoup plus rapide.</h2>
+                          <p>
+                            <b>Pas le temps ?</b> Pas de problème.
+                            Pronote+ est plus rapide qu'avant et permet d'accéder à ses notes et a des statistiques plus avancées que sur Pronote classique.
+                          </p>
+                        </div>
+                        </ion-slide>
+              
+                        <ion-slide>
+                            <div class="slide">
+                          <img src="img/slide-4.png" />
+                          <h2>Prêts a vous lançer ?</h2>
+                          <ion-button fill="clear" onclick="go()">C'est parti <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+                          </div>
+                        </ion-slide>
+                      </ion-slides>
+                </ion-content>
+            </ion-modal>
+
+            <!-- selection de date 1 -->
+            <ion-modal id="DateSelect" is-open="false" class="fullModal">
+                <ion-header translucent><!---->
+                    <ion-toolbar>
+                        <ion-title>Sélectionner la période</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button onclick="confirmDate()">Valider</ion-button>
+                          </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content class="datepick">
+                    <ion-datetime id="DateSelector" class="datepicker" size="cover" presentation="date" first-day-of-week="1" locale="fr-FR"></ion-datetime>
+                </ion-content>
+            </ion-modal>
+
+            <!-- selection de date 2 -->
+            <ion-modal id="DateSelect2" is-open="false" class="fullModal">
+                <ion-header translucent><!---->
+                    <ion-toolbar>
+                        <ion-title>Sélectionner la période</ion-title>
+                        <ion-buttons slot="end">
+                            <ion-button onclick="confirmDate2()">Valider</ion-button>
+                          </ion-buttons>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content class="datepick">
+                    <ion-datetime id="DateSelector2" class="datepicker" size="cover" presentation="date" first-day-of-week="1" locale="fr-FR"></ion-datetime>
+                </ion-content>
+            </ion-modal>
+
+            <!-- Affichage de la note -->
+            <ion-modal id="MarkFull" is-open="false" class="fullModal">
+                <ion-header translucent><!---->
+                    <ion-toolbar>
+                        <ion-title id="MarkFullTitle">Ma note</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen>
+                    <h3><span id="MarkFullOut20"></span><sm>/20</sm></h3>
+                    <small><span id="MarkFullValue"></span>/<span id="MarkFullScale"></span></small>
+
+                    <div id="det">
+                        <div class="innerDet">
+                            <small>Note +</small>
+                            <p><span id="MarkFullMax"></span><sm>/20</sm></p>
+                        </div>
+                        <div class="innerDet">
+                            <small>Note -</small>
+                            <p><span id="MarkFullMin"></span><sm>/20</sm></p>
+                        </div>
+                        <div class="innerDet">
+                            <small>Moy.</small>
+                            <p><span id="MarkFullAverage"></span><sm>/20</sm></p>
+                        </div>
+                        <div class="innerDet">
+                            <small>Coef.</small>
+                            <p>x<span id="MarkFullCoef"></span></p>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-modal>
+
+            <!-- Écran emploi du temps -->
+            <ion-tab tab="tab-schedule">
+                <ion-header>
+                    <ion-toolbar>
+                      <ion-title>Emploi du temps</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen="true">
+                    <div id="timetable">
+                        <div id="timetable-inner">
+                            <div class="loading">
+                                <ion-spinner></ion-spinner>
+                                <p>Chargement de l'emploi du temps</p>
+                            </div>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-tab>
+
+            <!-- Écran devoirs -->
+            <ion-tab tab="tab-homework">
+                <ion-header>
+                    <ion-toolbar>
+                      <ion-title>Travail à faire</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen="true">
+                    <div id="homework">
+                        <div id="homework-inner">
+                            <div class="loading">
+                                <ion-spinner></ion-spinner>
+                                <p>Chargement des devoirs</p>
+                            </div>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-tab>
+
+            <!-- Écran notes -->
+            <ion-tab tab="tab-marks">
+                <ion-header>
+                    <ion-toolbar onclick="wow();">
+                      <ion-title>Notes</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen="true">
+                    <div id="marks">
+                        <div class="loading">
+                            <ion-spinner></ion-spinner>
+                            <p>Chargement des notes</p>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-tab>
+
+            <!-- Écran news -->
+            <ion-tab tab="tab-news">
+                <ion-header>
+                    <ion-toolbar>
+                      <ion-title>Actualités de l'établissement</ion-title>
+                    </ion-toolbar>
+                </ion-header>
+                <ion-content fullscreen="true">
+                    <div id="news">
+                        <div class="loading">
+                            <ion-spinner></ion-spinner>
+                            <p>Chargement des actualités</p>
+                        </div>
+                    </div>
+                </ion-content>
+            </ion-tab>
+          
+            <!-- Tabbar -->
+            <ion-tab-bar slot="bottom">
+              <ion-tab-button tab="tab-schedule">
+                <i icon-name="calendar"></i>
+                <ion-label>Cours</ion-label>
+                <ion-badge id="coursLength">6</ion-badge>
+              </ion-tab-button>
+              <ion-tab-button tab="tab-homework">
+                <i icon-name="list-checks"></i>
+                <ion-label>Devoirs</ion-label>
+                <ion-badge id="devoirsLength">6</ion-badge>
+              </ion-tab-button>
+              <ion-tab-button tab="tab-marks">
+                <i icon-name="trending-up"></i>
+                <ion-label>Notes</ion-label>
+              </ion-tab-button>
+              <ion-tab-button tab="tab-news">
+                <i icon-name="bell"></i>
+                <ion-label>Actualités</ion-label>
+                <ion-badge id="newsLength">6</ion-badge>
+              </ion-tab-button>
+            </ion-tab-bar>
+          </ion-tabs>
+
+          <script>
+              const currentVersion = 2.1
+          </script>
+        <script src="js/app.js"></script>
+    </body>
+</html>

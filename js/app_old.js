@@ -1,20 +1,13 @@
-// ______                      _             
-// | ___ \                    | |        _   
-// | |_/ / __ ___  _ __   ___ | |_ ___ _| |_ 
-// |  __/ '__/ _ \| '_ \ / _ \| __/ _ \_   _|
-// | |  | | | (_) | | | | (_) | ||  __/ |_|  
-// \_|  |_|  \___/|_| |_|\___/ \__\___|      
-//  JavaScript d'affichage
-//  Pronote+ version 2
-//  Fait par Vince Linise (sous Aihvah Interactve)
-//  API : https://www.npmjs.com/package/@dorian-eydoux/pronote-api
+// You're probably wondering why is there an app_old.js ?
+// It's actually because this was planned to release in GraphQL, but server limitations made this solution impossible.
+// So the other "app.js" contains a rewritten code, made to work with pronote_squared (REST API)
 
 // make icons
 lucide.createIcons();
 
 // consts
-const LoginURL = "http://134.122.100.81/login";
-const APIURL = "http://134.122.100.81/";
+const LoginURL = "http://localhost/login";
+const APIURL = "http://localhost/";
 
 // Traitement du login
 function makeLoginURL(url, username, password, cas) {
